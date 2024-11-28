@@ -16,6 +16,14 @@ func ShowPosition(s *screen.Screen, pos ...*vector3.Position) {
 	}
 }
 
+func ShowRotation(s *screen.Screen, rot ...*vector3.Rotation) {
+	for _, r := range rot {
+		str := fmt.Sprintf("X: %.2f, Y: %.2f, Z: %.2f", r.X, r.Y, r.Z)
+		Print(s, str)
+			
+	}
+}
+
 func Print(s *screen.Screen, str string, args ...int) {
 	if args != nil {
 		for x, ch := range str {

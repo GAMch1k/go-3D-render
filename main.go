@@ -6,7 +6,8 @@ import (
 	"golang.org/x/term"
 
 	"gamch1k.org/render/prefabs/3d/camera"
-	"gamch1k.org/render/prefabs/3d/sphere"
+	// "gamch1k.org/render/prefabs/3d/sphere"
+	"gamch1k.org/render/prefabs/3d/cube"
 	"gamch1k.org/render/prefabs/3d/vector3"
 	"gamch1k.org/render/prefabs/screen"
 	"gamch1k.org/render/utils"
@@ -28,17 +29,22 @@ func main() {
 	var camera camera.Camera = camera.Camera{
 		Vector3: vector3.New(0, 0, -5, 0, 0, 0),
 		Screen:  &screen,
-		ViewDistance: 40,
+		ViewDistance: 5,
 	}
 
-	sphere1 := sphere.Sphere{
-		Vector3: vector3.New(0, 0, 20, 0, 0, 0),
-		Radius:  3,
-	}
+	// sphere1 := sphere.Sphere{
+	// 	Vector3: vector3.New(0, 0, 20, 0, 0, 0),
+	// 	Radius:  3,
+	// }
 
-	sphere2 := sphere.Sphere{
-		Vector3: vector3.New(10, 8, 8, 0, 0, 0),
-		Radius:  8,
+	// sphere2 := sphere.Sphere{
+	// 	Vector3: vector3.New(10, 8, 8, 0, 0, 0),
+	// 	Radius:  8,
+	// }
+
+	cube1 := cube.Cube{
+		Vector3: vector3.New(0, 0, 13, 0, 0, 0),
+		Size: 10,
 	}
 
 	keyreader := utils.KeyReader()
@@ -49,11 +55,13 @@ func main() {
 	for {
 		utils.ShowFps(&screen, _frames)
 
-		camera.Render(sphere1, sphere2)
+		// camera.Render(sphere1, sphere2)
+		camera.Render(cube1)
 
 
 
-		utils.ShowPosition(&screen, &camera.Position, &screen.Position)
+
+		// utils.ShowPosition(&screen, &camera.Position, &screen.Position)
 		
 		
 		// Showing rendered image

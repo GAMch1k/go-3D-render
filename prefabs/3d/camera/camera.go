@@ -1,6 +1,7 @@
 package camera
 
 import (
+	"fmt"
 	"math"
 
 	"gamch1k.org/render/prefabs/3d/vector3"
@@ -24,6 +25,7 @@ func (cam *Camera) Render(objects ...vector3.Object) {
 		utils.ShowPosition(cam.Screen, &object.Vector().Position)
 	}
 
+	minimal := math.Inf(1)
 	
 	for scy := range cam.Screen.Shape {
 		for scx := range cam.Screen.Shape[scy] {
@@ -41,13 +43,16 @@ func (cam *Camera) Render(objects ...vector3.Object) {
 			tmin := math.Inf(1) 
 
 			for _, object := range objects {
-				if object.Vector().Position.Distance(&cam.Position) > cam.ViewDistance {
-					continue
-				}
+				// if object.Vector().Position.Distance(&cam.Position) > cam.ViewDistance {
+				// 	continue
+				// }
 
 				t := object.Render(&cam.Vector3, &pixel)
-				if t < tmin {
+				if t < tmin && t >= 0 {
 					tmin = t
+					if t < minimal {
+						minimal = t
+					}
 				}
 			}
 
@@ -63,5 +68,7 @@ func (cam *Camera) Render(objects ...vector3.Object) {
 
 		}
 	}
+
+	utils.Print(cam.Screen, fmt.Sprintf("min: %0.2f", minimal))
 }
 

@@ -119,3 +119,30 @@ func (p *Position) Dot(p2 *Position) float64 {
 func (p *Position) Distance(p2 *Position) float64 {
 	return math.Sqrt(math.Pow(p.X-p2.X, 2) + math.Pow(p.Y-p2.Y, 2) + math.Pow(p.Z-p2.Z, 2))
 }
+
+
+func (r *Rotation) Rotate(nr Rotation) {
+	r.X += nr.X
+	r.Y += nr.Y
+	r.Z += nr.Z
+
+	if r.X > 360 {
+		r.X -= 360
+	}
+	if r.Y > 360 {
+		r.Y -= 360
+	}
+	if r.Z > 360 {
+		r.Z -= 360
+	}
+
+	if r.X < 0 {
+		r.X += 360
+	}
+	if r.Y < 0 {
+		r.Y += 360
+	}
+	if r.Z < 0 {
+		r.Z += 360
+	}
+}
