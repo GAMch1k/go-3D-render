@@ -11,19 +11,20 @@ type Sphere struct {
 	Radius float64
 }
 
-func (s Sphere) Vector() *vector3.Vector3 {
+func New(v3 vector3.Vector3, r float64) *Sphere {
+	return &Sphere{v3, r}
+}
+
+func (s *Sphere) Vector() *vector3.Vector3 {
 	return &s.Vector3
 }
 
-func (s Sphere) Render(cam *vector3.Vector3, pixel *vector3.Vector3) float64 {
-
-	ray := pixel.Substract(cam)
-	ray_dir := ray.Position.Normalize()
+func (s *Sphere) Render(cam *vector3.Vector3, ray_dir *vector3.Position) float64 {
 
 	oc := cam.Substract(&s.Vector3)
-	a := ray_dir.Dot(&ray_dir)
-	b := 2.0 * oc.Dot(&ray_dir)
-	c := oc.Position.Dot(&oc.Position) - s.Radius*s.Radius
+	a := ray_dir.DotProduct(ray_dir)
+	b := 2.0 * oc.DotProduct(ray_dir)
+	c := oc.Position.DotProduct(&oc.Position) - s.Radius*s.Radius
 
 	discr := b*b - 4*a*c
 

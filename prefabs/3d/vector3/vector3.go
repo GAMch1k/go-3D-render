@@ -23,7 +23,7 @@ type Rotation struct {
 
 type Object interface {
 	Vector() *Vector3
-	Render(cam *Vector3, pixel *Vector3) float64
+	Render(cam *Vector3, ray_dir *Position) float64
 }
 
 
@@ -112,37 +112,129 @@ func (p *Position) Normalize() Position {
 	}
 }
 
-func (p *Position) Dot(p2 *Position) float64 {
+func (p *Position) DotProduct(p2 *Position) float64 {
 	return p.X*p2.X + p.Y*p2.Y + p.Z*p2.Z
+}
+
+func (p *Position) CrossProduct(p2 *Position) Position {
+	return Position{
+		X: p.Y*p2.Z - p.Z*p2.Y,
+		Y: p.Z*p2.X - p.X*p2.Z,
+		Z: p.X*p2.Y - p.Y*p2.X,
+	}
 }
 
 func (p *Position) Distance(p2 *Position) float64 {
 	return math.Sqrt(math.Pow(p.X-p2.X, 2) + math.Pow(p.Y-p2.Y, 2) + math.Pow(p.Z-p2.Z, 2))
 }
 
+func (r *Rotation) Add(r2 *Rotation) *Rotation {
+	x := r.X + r2.X
+	y := r.Y + r2.Y
+	z := r.Z + r2.Z
 
-func (r *Rotation) Rotate(nr Rotation) {
-	r.X += nr.X
-	r.Y += nr.Y
-	r.Z += nr.Z
-
-	if r.X > 360 {
-		r.X -= 360
+	if x > 360 {
+		x -= 360
 	}
-	if r.Y > 360 {
-		r.Y -= 360
+	if y > 360 {
+		y -= 360
 	}
-	if r.Z > 360 {
-		r.Z -= 360
+	if z > 360 {
+		z -= 360
 	}
 
-	if r.X < 0 {
-		r.X += 360
+	if x < -360 {
+		x += 360
 	}
-	if r.Y < 0 {
-		r.Y += 360
+	if y < -360 {
+		y += 360
 	}
-	if r.Z < 0 {
-		r.Z += 360
+	if z < -360 {
+		z += 360
+	}
+
+	return &Rotation{
+		X: x,
+		Y: y,
+		Z: z,
 	}
 }
+
+func (r *Rotation) Rotate(r2 *Rotation) {
+	x := r.X + r2.X
+	y := r.Y + r2.Y
+	z := r.Z + r2.Z
+
+	if x > 360 {
+		x -= 360
+	}
+	if y > 360 {
+		y -= 360
+	}
+	if z > 360 {
+		z -= 360
+	}
+
+	if x < -360 {
+		x += 360
+	}
+	if y < -360 {
+		y += 360
+	}
+	if z < -360 {
+		z += 360
+	}
+
+	r.X = x
+	r.Y = y
+	r.Z = z
+}
+
+	
+func (v *Vector3) Rotate(r Rotation, center Position) {
+	// if r.X == 0 && r.Y == 0 && r.Z == 0 {
+	// 	return
+	// }
+
+	v.Position.X -= center.X
+	v.Position.Y -= center.Y 
+	v.Position.Z -= center.Z
+
+    if r.X != 0 {
+        // X rotation
+        rx := r.X * math.Pi / 180
+        cosX := math.Cos(rx)
+        sinX := math.Sin(rx)
+        y := v.Position.Y*cosX - v.Position.Z*sinX
+        z := v.Position.Y*sinX + v.Position.Z*cosX
+        v.Position.Y = y
+        v.Position.Z = z
+    }
+
+    if r.Y != 0 {
+        // Y rotation
+        ry := r.Y * math.Pi / 180
+        cosY := math.Cos(ry)
+        sinY := math.Sin(ry)
+        x := v.Position.X*cosY + v.Position.Z*sinY
+        z := -v.Position.X*sinY + v.Position.Z*cosY
+        v.Position.X = x
+        v.Position.Z = z
+    }
+
+    if r.Z != 0 {
+        // Z rotation
+        rz := r.Z * math.Pi / 180
+        cosZ := math.Cos(rz)
+        sinZ := math.Sin(rz)
+        x := v.Position.X*cosZ - v.Position.Y*sinZ
+        y := v.Position.X*sinZ + v.Position.Y*cosZ
+        v.Position.X = x
+        v.Position.Y = y
+
+    }
+	
+	v.Position.X += center.X
+	v.Position.Y += center.Y
+	v.Position.Z += center.Z
+}	

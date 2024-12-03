@@ -28,7 +28,7 @@ func (s *Screen) Clear() {
 			s.Shape[i][j] = s.Background
 		}
 	}
-	s.StatsLast = 0
+	s.StatsLast = 2
 }
 
 func (s *Screen) Draw() {
@@ -53,9 +53,10 @@ func (s *Screen) Init(w, h int, bg string, pixelwidth, pixelheight float64) {
 		float64(h / 2) * pixelheight,
 		0, 0, 0, 0,
 	)
-	s.Shade = []string{" ", "░", "▒", "▓", "█"}
+	// s.Shade = []string{" ", "░", "▒", "▓", "█"}
 	// s.Shade = []string{" ", ".", ",", "_", "-", "=", "+", "*", "%", "#", "@"}
-
+	// s.Shade = []string{"@", "#", "M", "&", "%", "B", "8", "W", "o", "*", "+", "=", "-", "~", ":", ",", ".", " "}
+	s.Shade = []string{" ", ".", ",", ":", "~", "-", "=", "+", "*", "o", "W", "8", "B", "%", "&", "M", "#", "@"}
 	
 
 	s.Shape = make([][]string, h)

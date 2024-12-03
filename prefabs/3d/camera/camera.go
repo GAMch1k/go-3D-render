@@ -20,18 +20,31 @@ func (cam *Camera) Move(np vector3.Position) {
 	cam.Screen.Move(np)
 }
 
+// func (cam *Camera) Rotate(rotation vector3.Rotation) {
+// 	// TO DO
+
+// 	// I need to rotate screen around camera origin
+// 	cam.Screen.Center.Rotation.Rotate(&rotation)
+// 	cam.Screen.Center.Vector().Rotate(cam.Screen.Center.Rotation, cam.Position)
+// 	x := (cam.Screen.Center.Vector().Position.X - float64(cam.Screen.Width) / 2) * cam.Screen.PixelWidth
+// 	y := (cam.Screen.Center.Vector().Position.Y + float64(cam.Screen.Height) / 2) * cam.Screen.PixelHeight
+// 	z := cam.Screen.Center.Vector().Position.Z
+
+// 	cam.Screen.Position.X = x
+// 	cam.Screen.Position.Y = y
+// 	cam.Screen.Position.Z = z
+// }
+
 func (cam *Camera) Render(objects ...vector3.Object) {
-	for _, object := range objects {
-		utils.ShowPosition(cam.Screen, &object.Vector().Position)
-	}
+	
 
 	minimal := math.Inf(1)
 	
 	for scy := range cam.Screen.Shape {
 		for scx := range cam.Screen.Shape[scy] {
-			if !utils.StringInSlice(cam.Screen.Get(scx, scy), cam.Screen.Shade) {
-				continue
-			}
+			// if !utils.StringInSlice(cam.Screen.Get(scx, scy), cam.Screen.Shade) {
+			// 	continue
+			// }
 
 			pixel := vector3.New(
 				cam.Screen.Position.X+(float64(scx)*cam.Screen.PixelWidth),
@@ -42,12 +55,16 @@ func (cam *Camera) Render(objects ...vector3.Object) {
 
 			tmin := math.Inf(1) 
 
+			ray := pixel.Substract(&cam.Vector3)
+			ray_dir := ray.Position.Normalize()
+
 			for _, object := range objects {
+				
 				// if object.Vector().Position.Distance(&cam.Position) > cam.ViewDistance {
 				// 	continue
 				// }
 
-				t := object.Render(&cam.Vector3, &pixel)
+				t := object.Render(&cam.Vector3, &ray_dir)
 				if t < tmin && t >= 0 {
 					tmin = t
 					if t < minimal {
@@ -69,6 +86,11 @@ func (cam *Camera) Render(objects ...vector3.Object) {
 		}
 	}
 
-	utils.Print(cam.Screen, fmt.Sprintf("min: %0.2f", minimal))
+	utils.Print(cam.Screen, "Objects positions:")
+	for _, object := range objects {
+		utils.ShowPosition(cam.Screen, &object.Vector().Position)
+	}
+
+	utils.Print(cam.Screen, fmt.Sprintf("t minimal: %0.2f", minimal))
 }
 

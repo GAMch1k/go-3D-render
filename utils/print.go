@@ -40,6 +40,6 @@ func Print(s *screen.Screen, str string, args ...int) {
 
 func ShowFps(s *screen.Screen, fps int) {
 	str := fmt.Sprintf("fps: %d", fps)
-	Print(s, str)
+	Print(s, str, 1)
 }
 
